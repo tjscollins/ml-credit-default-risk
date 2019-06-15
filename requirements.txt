@@ -1,0 +1,9 @@
+Flask
+Redis
+pandas
+numpy
+sklearn
+uwsgi
+Psycopg2
+Flask-SQLAlchemy
+Flask-Migrate
