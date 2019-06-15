@@ -15,3 +15,4 @@ class Routes(unittest.TestCase):
     def test_main_page(self):
         response = self.app.get('/')
         self.assertEqual(response.status_code, 200)
+        print(response.data)

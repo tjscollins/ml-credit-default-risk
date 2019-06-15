@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, render_template
 from redis import Redis, RedisError
 import os
 import socket
@@ -21,13 +21,10 @@ def hello():
     except RedisError:
         visits = "<i>cannot connect to Redis, counter disabled</i>"
 
-    html = "<h3>Hello {name}!</h3>" \
-           "<b>Hostname:</b> {hostname}<br/>" \
-           "<b>Visits:</b> {visits}"
-    return html.format(name=os.getenv("NAME", "world"), hostname=socket.gethostname(), visits=visits)
+    return render_template("login.html", visits=visits)
 
 if __name__ == "__main__":
     if is_production_env:
         print(f"Cannot run directly in production")
     else:
-        app.run(host='0.0.0.0', port=3000)
+        app.run(host='0.0.0.0', port=8000)

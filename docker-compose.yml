@@ -1,32 +1,54 @@
 version: "3.7"
 services:
 
-    backend-app:
+    webapp:
         container_name: webapp
         build:
             context: '.'
+            dockerfile: 'Webapp.Dockerfile'
         depends_on:
             - db
             - redis
         ports:
-            - 80:8000
+            - 8000:8000
             - 8080:8080
+        networks: 
+            - webapp-network
+    
+    proxy:
+        image: nginx
+        container_name: nginx-proxy
+        build:
+            context: '.'
+            dockerfile: 'NginxProxy.Dockerfile'
+        ports:
+            - 80:80
+            - 443:443
+        networks: 
+            - webapp-network
 
     db:
         image: postgres:11
-        container_name: db
+        container_name: postgres-server
         ports:
             - "5432:5432"
         volumes:
             - data-postgres:/var/lib/postgresql/data
+        networks: 
+            - webapp-network
 
     redis:
         image: redis
-        container_name: redis
+        container_name: redis-server
         ports:
             - "6379:6379"
         volumes:
             - data-redis:/data
+        networks: 
+            - webapp-network
 volumes:
     data-postgres:
     data-redis:
+
+networks: 
+    webapp-network:
