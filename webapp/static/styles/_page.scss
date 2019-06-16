@@ -6,12 +6,13 @@ html, body {
 
 .page-header {
     padding-left: 1em;
-    width: 100%;
+    padding-right: 1em;
+    width: stretch;
     height: 50px;
     background-color: lightgrey;
     border-bottom: 1px solid darkgray;
     display: flex;
-    justify-content: flex-start;
+    justify-content:  space-between;
     align-items: center;
 }
 

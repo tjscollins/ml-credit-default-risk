@@ -9,6 +9,9 @@ services:
         depends_on:
             - db
             - redis
+        environment: 
+            DATABASE_URL: "postgres://postgres-server/"
+
         ports:
             - 8000:8000
             - 8080:8080
