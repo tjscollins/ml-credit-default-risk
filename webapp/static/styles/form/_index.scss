@@ -1,0 +1,11 @@
+@import 'inputs';
+
+.form-group__horizontal {
+    display: flex; 
+    flex-direction: row;
+    justify-content: space-between;
+    align-content: center;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 1em;
+}
