@@ -1,0 +1,19 @@
+.login-form {
+    display: flex;
+    flex-direction: column;
+    height: 125px;
+    width: 350px;
+    align-content: space-around;
+    justify-content: space-between;
+}
+
+.login-form-container {
+    margin-top: 100px;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    align-content: space-around;
+}

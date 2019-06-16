@@ -1,0 +1,22 @@
+html, body {
+    font-size: 16px;
+    margin: 0;
+    padding: 0;
+}
+
+.page-header {
+    padding-left: 1em;
+    padding-right: 1em;
+    width: stretch;
+    height: 50px;
+    background-color: lightgrey;
+    border-bottom: 1px solid darkgray;
+    display: flex;
+    justify-content:  space-between;
+    align-items: center;
+}
+
+.page-header__title {
+    font-size: 1.5em;
+    font-weight: 600;
+}

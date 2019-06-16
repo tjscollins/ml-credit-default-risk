@@ -12,6 +12,11 @@ class Routes(unittest.TestCase):
     def tearDown(self):
         pass
 
-    def test_main_page(self):
+    def test_main_page_unauthenticated(self):
         response = self.app.get('/')
+        self.assertEqual(response.status_code, 302)
+        self.assertRegex(response.location, '^http://.*/login?')
+    
+    def test_login_page(self):
+        response = self.app.get('/login')
         self.assertEqual(response.status_code, 200)
