@@ -14,6 +14,10 @@ jobs:
       # CircleCI maintains a library of pre-built images
       # documented at https://circleci.com/docs/2.0/circleci-images/
       - image: circleci/postgres:11
+        environment:
+          POSTGRES_USER: root
+          POSTGRES_DB: webapp_test
+          
       - image: circleci/redis
 
     working_directory: ~/repo
@@ -40,15 +44,20 @@ jobs:
             - ./venv
           key: v1-dependencies-{{ checksum "requirements.txt" }}
 
-      # run tests!
-      # this example uses Django's built-in test-runner
-      # other common Python testing frameworks include pytest and nose
-      # https://pytest.org
-      # https://nose.readthedocs.io
+      - run:
+          name: Migrate database
+          environment:
+            PYTHONPATH: ./
+          command: |
+            . venv/bin/activate
+            cd webapp
+            flask db upgrade
+
       - run:
           name: run tests
           command: |
             . venv/bin/activate
+            cd webapp
             pytest
 
       - store_artifacts:
