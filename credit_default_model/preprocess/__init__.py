@@ -5,6 +5,7 @@ from db import db_connection
 
 from .encode import encode_vars
 from load import save_data_frame
+from .outliers import handle_outliers
 
 def clean_data(*args, **kwargs):
     query = text(
@@ -58,4 +59,6 @@ def clean_data(*args, **kwargs):
             f"{encoded_data_frame.select_dtypes('object').apply(pd.Series.nunique, axis=0)}\n"
         )
 
-        save_data_frame(encoded_data_frame, f"processed_{table_name}")
+        cleaned_data_frame = handle_outliers(encoded_data_frame, table_name)
+
+        save_data_frame(cleaned_data_frame, f"processed_{table_name}")
