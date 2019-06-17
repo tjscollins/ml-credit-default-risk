@@ -6,7 +6,10 @@ import time
 from sqlalchemy import text 
 import pandas as pd
 
-from db import db_connection
+try:
+    from db import db_connection
+except:
+    from ..db import db_connection
 
 def load_data(*args):
     """
@@ -44,7 +47,7 @@ def save_data_frame(data_frame, table_name):
             )
             try:
                 db_connection.execute(query)
-                print(f"Successfully created unique index.")
+                print(f"Successfully created index.")
             except Exception as err:
                 print(f"Skipping index due to: {err}")
     

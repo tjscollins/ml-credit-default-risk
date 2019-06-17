@@ -1,10 +1,16 @@
 from sqlalchemy import text
 import pandas as pd
 
-from db import db_connection
+try:
+    from db import db_connection
+except:
+    from ..db import db_connection
 
 from .encode import encode_vars
-from load import save_data_frame
+try:
+    from load import save_data_frame
+except:
+    from ..load import save_data_frame
 from .outliers import handle_outliers
 
 def clean_data(*args, **kwargs):

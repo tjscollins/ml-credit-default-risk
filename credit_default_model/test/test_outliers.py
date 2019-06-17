@@ -1,19 +1,32 @@
 import unittest
 
 import pandas as pd
+import numpy as np
 
-from credit_default_model.preprocess.outliers import identify_outliers
+from credit_default_model.preprocess.outliers import remove_days_employed_outliers
+from credit_default_model.db import db_connection
 
 class TestEncodeVars(unittest.TestCase):
 
     def test_identify_outliers(self):
         test_data = pd.DataFrame({
-            'X': [1, 2, 3, 4, -10000, 10000]
+            'DAYS_EMPLOYED': [-1, -2, -3, -4, 365243, 365243]
         })
 
+        cleaned_data = remove_days_employed_outliers(test_data, 'application_train')
         self.assertEqual(
-            identify_outliers(test_data),
-            pd.DataFrame({
-                'X': [-10000, 10000]
-            })
+            
+            cleaned_data.loc[0]['DAYS_EMPLOYED'], -1
+        )
+        self.assertTrue(
+            np.isnan(cleaned_data.loc[5]['DAYS_EMPLOYED'])
+        )
+        self.assertEqual(
+            cleaned_data.loc[1]['DAYS_EMPLOYED'], -2
+        )
+        self.assertEqual(
+            cleaned_data.loc[0]['DAYS_EMPLOYED_ANOM'], False
+        )
+        self.assertEqual(
+            cleaned_data.loc[5]['DAYS_EMPLOYED_ANOM'], True
         )
