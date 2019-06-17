@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 
-def remove_days_employed_outliers(data_frame: pd.DataFrame, table_name):
+def remove_days_employed_outliers(data_frame: pd.DataFrame, table_name) -> pd.DataFrame:
     """
     Removes anomalous DAYS_EMPLOYED quantity by replacing with NaN and adding a
     column that indicates this operation was performed.  This allows the model
