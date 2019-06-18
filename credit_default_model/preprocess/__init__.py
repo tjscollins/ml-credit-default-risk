@@ -1,17 +1,10 @@
 from sqlalchemy import text
 import pandas as pd
 
-try:
-    from db import db_connection
-except:
-    from ..db import db_connection
-
-from .encode import encode_vars
-try:
-    from load import save_data_frame
-except:
-    from ..load import save_data_frame
-from .outliers import handle_outliers
+from db import db_connection
+from load import save_data_frame
+from preprocess.encode import encode_vars
+from preprocess.outliers import handle_outliers
 
 def clean_data(*args, **kwargs):
     query = text(

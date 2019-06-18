@@ -2,7 +2,7 @@ import unittest
 
 import pandas as pd
 
-from credit_default_model.preprocess.encode import encode_vars
+from credit_default_model.preprocess.encode import encode_vars, align_data
 
 class TestEncodeVars(unittest.TestCase):
 
@@ -124,3 +124,93 @@ class TestEncodeVars(unittest.TestCase):
         test_data_frame = pd.DataFrame(test_data)
 
         self.assertRaises(ValueError, lambda: encode_vars(test_data_frame, encoding_type='random-encoding'))
+
+class TestAlignFrames(unittest.TestCase):
+
+    def test_basic_alignment(self):
+        train_data = pd.DataFrame({
+            'X': [1, 2, 3, 4],
+            'Y': [4, 3, 2, 1],
+            'TARGET': [0, 0, 0, 0]
+        })
+
+        test_data = pd.DataFrame({
+            'X': [1, 2, 3, 4]
+        })
+
+        atrd, ated = align_data(train_data, test_data)
+
+        self.assertRaises(
+            KeyError, lambda: atrd.loc[0]['Y']
+        )
+        self.assertIsNotNone(
+            atrd.loc[0]['X']
+        )
+        self.assertIsNotNone(
+            atrd.loc[0]['TARGET']
+        )
+        self.assertRaises(
+            KeyError, lambda: atrd.loc[3]['Y']
+        )
+        self.assertIsNotNone(
+            atrd.loc[3]['TARGET']
+        )
+        self.assertIsNotNone(
+            atrd.loc[3]['X']
+        )
+        
+
+        self.assertIsNotNone(
+            ated.loc[0]['X']
+        )
+        self.assertRaises(
+            KeyError, lambda: ated.loc[0]['Y']
+        )
+        self.assertRaises(
+            KeyError, lambda: ated.loc[0]['TARGET']
+        )
+
+    def test_preserve(self):
+        train_data = pd.DataFrame({
+            'X': [1, 2, 3, 4],
+            'Y': [4, 3, 2, 1],
+            'Z': ['a', 'b', 'c', 'd'],
+            'TARGET': [0, 0, 0, 0]
+        })
+
+        test_data = pd.DataFrame({
+            'X': [1, 2, 3, 4]
+        })        
+
+        atrd, ated = align_data(train_data, test_data, preserve=['Z', 'Y'])
+
+
+        self.assertRaises(
+            KeyError, lambda: atrd.loc[0]['TARGET']
+        )
+        self.assertIsNotNone(
+            atrd.loc[0]['Z']
+        )
+        self.assertIsNotNone(
+            atrd.loc[0]['Y']
+        )
+        self.assertRaises(
+            KeyError, lambda: atrd.loc[3]['TARGET']
+        )
+        self.assertIsNotNone(
+            atrd.loc[3]['X']
+        )
+        self.assertIsNotNone(
+            atrd.loc[3]['Y']
+        )
+        
+
+        self.assertIsNotNone(
+            ated.loc[0]['X']
+        )
+        self.assertRaises(
+            KeyError, lambda: ated.loc[0]['Y']
+        )
+        self.assertRaises(
+            KeyError, lambda: ated.loc[0]['TARGET']
+        )
