@@ -54,11 +54,18 @@ jobs:
             flask db upgrade
 
       - run:
-          name: run tests
+          name: Run Webapp tests
           command: |
             . venv/bin/activate
             cd webapp
-            pytest
+            python -m pytest
+      
+      - run:
+          name: Run CDM tests
+          command: |
+            . venv/bin/activate
+            cd credit_default_model
+            python -m pytest
 
       - store_artifacts:
           path: test-reports
