@@ -1,7 +1,8 @@
 import argparse
 import textwrap
 
-from db import load_data
+from load import load_data
+from preprocess import clean_data
 
 parser = argparse.ArgumentParser(
     prog='python manage.py',
@@ -18,7 +19,7 @@ deploy      Save and deploy the trained model to be used by the web application.
 """)
 
 subparsers.add_parser('load').set_defaults(func=load_data)
-subparsers.add_parser('preprocess').set_defaults(func=lambda x: None)
+subparsers.add_parser('preprocess').set_defaults(func=clean_data)
 subparsers.add_parser('feature').set_defaults(func=lambda x: None)
 subparsers.add_parser('train').set_defaults(func=lambda x: None)
 subparsers.add_parser('deploy').set_defaults(func=lambda x: None)
