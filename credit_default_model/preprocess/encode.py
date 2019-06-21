@@ -79,9 +79,13 @@ def align_data(training_data: pd.DataFrame, test_data: pd.DataFrame, preserve=['
             test_data aligned with training_data
 
     """
+    print(f"Aligning training and test data before combining for feature engineering:")
+
     preserved_features = training_data[preserve]
     aligned_training_data, aligned_test_data = training_data.align(test_data, join='inner', axis=1)
 
     aligned_training_data[preserve] = preserved_features
+
+    print(f"  Aligned data has shape {aligned_training_data.shape}")
 
     return aligned_training_data, aligned_test_data

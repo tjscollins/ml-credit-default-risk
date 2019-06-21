@@ -2,29 +2,18 @@ from sqlalchemy import text
 import pandas as pd
 
 from db import db_connection
+from db.tables import get_raw_tables, load_table_to_data_frame
 from load import save_data_frame
 from preprocess.encode import encode_vars
-from preprocess.outliers import handle_outliers
+from preprocess.cleaners import run_cleaners
 
 def clean_data(*args, **kwargs):
-    query = text(
-        "SELECT table_name FROM information_schema.tables "
-        "WHERE table_schema = 'public' "
-            "AND table_name NOT LIKE 'processed/_%' escape '/'"
-            "AND table_name NOT LIKE 'features/_%' escape '/';"
-    )
-    tables = db_connection.execute(query).fetchall()
-
-    for table_name in tables:
-        table_name = table_name[0]
-        query = text(
-            f"SELECT * FROM {table_name};"
-        )
-        executable = db_connection.execute(query)
-        columns = executable.keys()
-        data = executable.fetchall()
-
-        data_frame = pd.DataFrame(data, columns=columns)
+    """
+    Apply data cleaning logic to raw data tables and store them in processed_
+    data tables.
+    """
+    for table_name in get_raw_tables():
+        data_frame = load_table_to_data_frame(table_name)
 
         print(
             f"Preprocessing data from {table_name} with shape {data_frame.shape}\n"
@@ -58,6 +47,6 @@ def clean_data(*args, **kwargs):
             f"{encoded_data_frame.select_dtypes('object').apply(pd.Series.nunique, axis=0)}\n"
         )
 
-        cleaned_data_frame = handle_outliers(encoded_data_frame, table_name)
+        cleaned_data_frame = run_cleaners(encoded_data_frame, table_name)
 
         save_data_frame(cleaned_data_frame, f"processed_{table_name}")
