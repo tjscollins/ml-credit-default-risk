@@ -1,3 +1,5 @@
+from typing import Dict, Callable, List
+
 import numpy as np
 import pandas as pd
 
@@ -18,20 +20,43 @@ def remove_days_employed_outliers(data_frame: pd.DataFrame, table_name) -> pd.Da
 
     return data_frame
 
-def handle_outliers(data_frame, table_name):
+def clean_column_name(data_frame: pd.DataFrame, table_name: str) -> pd.DataFrame:
+    """
+
+    """
+    columns: List[str] = data_frame.columns
+
+    for col in columns:
+        new_col = str(col).replace('(', '')
+        new_col = str(new_col).replace(')', '')
+        new_col = str(new_col).replace(' ', '_')
+        new_col = str(new_col).replace('+', '')
+
+        temp = data_frame[col]
+        data_frame = data_frame.drop(col, axis=1)
+        data_frame[new_col] = temp
+    
+    return data_frame
+
+DataCleaningMethod = Callable[[pd.DataFrame, str], pd.DataFrame]
+
+def run_cleaners(data_frame: pd.DataFrame, table_name: str) -> None:
     """
     Applies the handler_methods to a data frame if that data frame comes
     from the matching table_name the handler methods are assigned to.  This
     allows us to define handler methods for each data table based on manually
     identified outliers that we may wish to treat.
     """
-    handler_methods = {
+    handler_methods: Dict[str, List[DataCleaningMethod]] = {
         'application_test': [remove_days_employed_outliers],
-        'application_train': [remove_days_employed_outliers]
+        'application_train': [remove_days_employed_outliers],
+        'bureau': [],
+        'bureau_balance': [],
+        'previous_application': []
     }
 
     print(
-        f"\n  Handling Outliers for {table_name}\n"
+        f"\n  Cleaning {table_name}\n"
         f"  _________________________________________________\n"
     )
 
