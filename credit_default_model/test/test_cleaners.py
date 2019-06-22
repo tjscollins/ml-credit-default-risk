@@ -4,7 +4,6 @@ import pandas as pd
 import numpy as np
 
 from credit_default_model.preprocess.cleaners import remove_days_employed_outliers
-from credit_default_model.db import db_connection
 
 class TestEncodeVars(unittest.TestCase):
 

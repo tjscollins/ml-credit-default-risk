@@ -6,10 +6,9 @@ import featuretools as ft
 import numpy as np
 import pandas as pd
 
-from db.tables import get_processed_tables, load_table_to_data_frame
 from preprocess.encode import align_data
 from preprocess.cleaners import clean_column_name
-from load import save_data_frame
+from load import save_data_frame, TABLES, load_data
 
 
 def collect_processed_data() -> Tuple[Dict[str, pd.DataFrame], str, str]:
@@ -39,7 +38,7 @@ def collect_processed_data() -> Tuple[Dict[str, pd.DataFrame], str, str]:
     test_regex = re.compile('test$')
     train_regex = re.compile('train$')
 
-    for table in get_processed_tables():
+    for table in TABLES:
         if test_regex.search(table) is not None:
             test_table = table
             print(f"Identified test data table {table}")
@@ -48,7 +47,7 @@ def collect_processed_data() -> Tuple[Dict[str, pd.DataFrame], str, str]:
             print(f"Identified training data table {table}")
         else:
             print(f"Identified additional data table {table}")
-        data[table] = load_table_to_data_frame(table)
+        data[table] = pd.read_pickle(f"data/processed_{table}.pkl")
         print(f"  {table} has shape {data[table].shape}\n")
     
     return data, train_table, test_table
@@ -68,16 +67,20 @@ def engineer_features(*args, **kwargs):
         data[test_table], ignore_index=True, sort=False
     )
 
+    labels = data['combined_train_test']['SK_ID_CURR']
+
     es = create_entity_set(data, train_table, test_table)
 
     feature_matrix, feature_names = ft.dfs(
         entityset=es,
         target_entity='combined_train_test',
-        max_depth=3
+        max_depth=3,
     )
 
     feature_matrix = selection.remove_low_information_features(feature_matrix)
 
+    feature_matrix['SK_ID_CURR'] = labels
+ 
     train_data = feature_matrix[feature_matrix['DATA_SET'] == 0]
     test_data = feature_matrix[feature_matrix['DATA_SET'] == 1]
 
@@ -94,28 +97,28 @@ def create_entity_set(data: pd.DataFrame, train_table: str, test_table: str) -> 
     )
 
     es = es.entity_from_dataframe(
-        entity_id='processed_bureau',
-        dataframe=data['processed_bureau'],
+        entity_id='bureau',
+        dataframe=data['bureau'],
         index='SK_ID_BUREAU'
     )
 
     es = es.entity_from_dataframe(
-        entity_id='processed_bureau_balance',
-        dataframe=data['processed_bureau_balance'],
+        entity_id='bureau_balance',
+        dataframe=data['bureau_balance'],
         make_index=True,
         index = 'bureaubalance_index'
     )
 
     es = es.entity_from_dataframe(
-        entity_id='processed_previous_application',
-        dataframe=data['processed_previous_application'],
+        entity_id='previous_application',
+        dataframe=data['previous_application'],
         index='SK_ID_PREV'
     )
 
     es = es.add_relationships([
-        ft.Relationship(es['combined_train_test']['SK_ID_CURR'], es['processed_bureau']['SK_ID_CURR']),
-        ft.Relationship(es['processed_bureau']['SK_ID_BUREAU'], es['processed_bureau_balance']['SK_ID_BUREAU']),
-        ft.Relationship(es['combined_train_test']['SK_ID_CURR'], es['processed_previous_application']['SK_ID_CURR'])
+        ft.Relationship(es['combined_train_test']['SK_ID_CURR'], es['bureau']['SK_ID_CURR']),
+        ft.Relationship(es['bureau']['SK_ID_BUREAU'], es['bureau_balance']['SK_ID_BUREAU']),
+        ft.Relationship(es['combined_train_test']['SK_ID_CURR'], es['previous_application']['SK_ID_CURR'])
     ])
 
     return es
