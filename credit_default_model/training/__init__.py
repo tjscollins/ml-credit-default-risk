@@ -1,0 +1,66 @@
+import re
+from typing import Dict, Tuple
+import os
+
+from sklearn.ensemble import RandomForestRegressor
+from sklearn.tree import DecisionTreeRegressor
+import numpy as np
+import pandas as pd
+from joblib import dump, load
+
+from load import save_data_frame
+from preprocess.encode import align_data
+
+MODELS = {
+    'DecisionTree': DecisionTreeRegressor(
+        min_samples_leaf=5,
+        max_depth=10
+    ),
+    'RandomForest': RandomForestRegressor(
+        min_samples_leaf=5,
+        max_depth=10,
+        verbose=1,
+        n_estimators=100,
+        n_jobs=-1
+    )
+}
+
+def train_model(model_type='DecisionTree'):
+    training_data: pd.DataFrame = pd.read_pickle("data/features_training_data.pkl")
+    print(training_data)
+    training_ids = training_data.index
+    training_labels = training_data['TARGET']
+    training_data = training_data.drop(columns=['TARGET'])
+
+    testing_data = pd.read_pickle("data/features_testing_data.pkl")
+
+    testing_ids = testing_data.index
+
+    features = list(training_data.columns)
+
+    print(f"Training data shape: {training_data.shape}")
+    print(f"Testing data shape: {testing_data.shape}")
+
+    model = MODELS[model_type]
+    model.fit(training_data, training_labels)
+
+    feature_importance_values = model.feature_importances_
+    feature_importances = pd.DataFrame({
+        'feature': features,
+        'importance': feature_importance_values
+    })
+    
+    model_predictions = model.predict(testing_data)
+
+    dump(model, 'data/trained_dt_model.joblib')
+
+    validation_data = pd.DataFrame(index=testing_ids, data={
+        'TARGET': model_predictions
+    })
+
+    validation_data.to_csv('data/validation.csv')
+    feature_importances.to_csv('data/feature_importances.csv')
+
+def validate_data(message: str):
+    os.system(f'kaggle c submit -f data/validation.csv -m "{message}" home-credit-default-risk')
+    os.system(f'kaggle c submissions home-credit-default-risk')

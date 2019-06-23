@@ -1,9 +1,8 @@
 from sqlalchemy import text
 import pandas as pd
 
-from db import db_connection
-from db.tables import get_raw_tables, load_table_to_data_frame
-from load import save_data_frame
+
+from load import save_data_frame, TABLES
 from preprocess.encode import encode_vars
 from preprocess.cleaners import run_cleaners
 
@@ -12,8 +11,8 @@ def clean_data(*args, **kwargs):
     Apply data cleaning logic to raw data tables and store them in processed_
     data tables.
     """
-    for table_name in get_raw_tables():
-        data_frame = load_table_to_data_frame(table_name)
+    for table_name in TABLES:
+        data_frame = pd.read_pickle(f"data/{table_name}.pkl")
 
         print(
             f"Preprocessing data from {table_name} with shape {data_frame.shape}\n"

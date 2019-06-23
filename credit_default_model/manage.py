@@ -1,9 +1,10 @@
 import argparse
 import textwrap
 
-from features import engineer_features
+from features import engineer_features, prune_features
 from load import load_data
 from preprocess import clean_data
+from training import train_model
 
 parser = argparse.ArgumentParser(
     prog='python manage.py',
@@ -22,7 +23,12 @@ deploy      Save and deploy the trained model to be used by the web application.
 subparsers.add_parser('load').set_defaults(func=load_data)
 subparsers.add_parser('preprocess').set_defaults(func=clean_data)
 subparsers.add_parser('features').set_defaults(func=engineer_features)
-subparsers.add_parser('train').set_defaults(func=lambda x: None)
+
+# Training Parser
+training_parser = subparsers.add_parser('train')
+training_parser.add_argument('model_type', type=str, help="Type of Machine Learning model to be trained on the dataset.  Choose one of: 'DecisionTree', 'RandomForest'")
+training_parser.set_defaults(func=lambda args: train_model(model_type=args.model_type))
+
 subparsers.add_parser('deploy').set_defaults(func=lambda x: None)
 
 if __name__ == "__main__":
