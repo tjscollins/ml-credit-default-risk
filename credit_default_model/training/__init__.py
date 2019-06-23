@@ -1,6 +1,7 @@
 import re
 from typing import Dict, Tuple
 import os
+from dotenv import load_dotenv
 
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.tree import DecisionTreeRegressor
@@ -11,23 +12,38 @@ from joblib import dump, load
 from load import save_data_frame
 from preprocess.encode import align_data
 
+load_dotenv()
+
+DT_MIN_SAMPLES_LEAF = int(os.getenv('RF_N_ESTIMATORS', default='5'))
+DT_MAX_DEPTH = int(os.getenv('DT_MAX_DEPTH', default='10'))
+str_or_none = os.getenv('DT_RANDOM_STATE', default=None)
+DT_RANDOM_STATE = int(str_or_none) if str_or_none is not None else None
+
+RF_N_ESTIMATORS = int(os.getenv('RF_N_ESTIMATORS', default='10'))
+RF_MAX_DEPTH = int(os.getenv('RF_MAX_DEPTH', default='10'))
+RF_MIN_SAMPLES_LEAF = int(os.getenv('RF_MIN_SAMPLES_LEAF', default='5'))
+str_or_none = os.getenv('RF_RANDOM_STATE', default=None)
+RF_RANDOM_STATE = int(str_or_none) if str_or_none is not None else None
+
 MODELS = {
     'DecisionTree': DecisionTreeRegressor(
-        min_samples_leaf=5,
-        max_depth=10
+        min_samples_leaf=DT_MIN_SAMPLES_LEAF,
+        max_depth=DT_MAX_DEPTH,
+        random_state=DT_RANDOM_STATE
     ),
     'RandomForest': RandomForestRegressor(
-        min_samples_leaf=5,
-        max_depth=10,
+        min_samples_leaf=RF_MIN_SAMPLES_LEAF,
+        max_depth=RF_MAX_DEPTH,
         verbose=1,
-        n_estimators=100,
-        n_jobs=-1
+        n_estimators=RF_N_ESTIMATORS,
+        n_jobs=-1,
+        random_state=RF_RANDOM_STATE
     )
 }
 
 def train_model(model_type='DecisionTree'):
     training_data: pd.DataFrame = pd.read_pickle("data/features_training_data.pkl")
-    print(training_data)
+
     training_ids = training_data.index
     training_labels = training_data['TARGET']
     training_data = training_data.drop(columns=['TARGET'])
