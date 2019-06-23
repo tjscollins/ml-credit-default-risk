@@ -86,6 +86,6 @@ def align_data(training_data: pd.DataFrame, test_data: pd.DataFrame, preserve=['
 
     aligned_training_data[preserve] = preserved_features
 
-    print(f"  Aligned data has shape {aligned_training_data.shape}")
+    print(f"  Aligned data has {aligned_training_data.shape[1]} columns")
 
     return aligned_training_data, aligned_test_data

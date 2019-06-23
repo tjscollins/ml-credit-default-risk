@@ -39,7 +39,7 @@ def load_data(*args, **kwargs):
         data = pd.read_csv(filename)
         save_data_frame(data, table_name)
 
-def save_data_frame(data_frame: pd.DataFrame, table_name: str, index_col_pattern='SK.*ID', row_limit=25000, row_offset=0) -> None:
+def save_data_frame(data_frame: pd.DataFrame, table_name: str, index_col_pattern='SK.*ID', row_limit=None, row_offset=0) -> None:
     """
     Saves the data stored in a pandas DataFrame into a table named table_name
     in the relational database.  Applies indexes to all columns matching the
@@ -64,10 +64,11 @@ def save_data_frame(data_frame: pd.DataFrame, table_name: str, index_col_pattern
     index_col_regex = re.compile(index_col_pattern)
     if re.compile('application_test').search(table_name) is not None:
         row_offset = 0
-    data_frame = data_frame.iloc[row_offset:row_limit,:]
+    if row_limit is not None:
+        data_frame = data_frame.iloc[row_offset:row_limit,:]
     print(f"  Saving {table_name} with shape {data_frame.shape}")
     start_time = time.monotonic()
-    data_frame.to_pickle(f"data/{table_name}.pkl")
+    pd.to_pickle(data_frame, f"data/{table_name}.pkl")
     finish_time = time.monotonic()
     print(f"  Completed saving {table_name} after {round(finish_time - start_time, 3)} seconds")
     
