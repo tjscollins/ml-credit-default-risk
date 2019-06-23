@@ -6,7 +6,15 @@ import time
 from sqlalchemy import text 
 import pandas as pd
 
-from db import db_connection
+TABLES = [
+    "application_test",
+    "application_train",
+    "bureau_balance",
+    "bureau",
+    "previous_application"
+]
+
+DATA_FILES = [f"data/{table}.csv" for table in TABLES]
 
 def load_data(*args, **kwargs):
     """
@@ -16,20 +24,13 @@ def load_data(*args, **kwargs):
     along with a table_name derived from the file's basename.
     """
     print(f"Loading data from data/ directory to relational database...")
-    files = [
-        "data/application_test.csv",
-        "data/application_train.csv",
-        "data/bureau_balance.csv",
-        "data/bureau.csv",
-        "data/previous_application.csv"
-    ]
     table_name_regex = re.compile('(\w+)\.csv$')
 
     print(f"  Will load the following files: ")
-    for filename in files:
+    for filename in DATA_FILES:
         print(f"    {filename}")
 
-    for filename in files:
+    for filename in DATA_FILES:
         match = table_name_regex.search(filename)
         if match is None:
             continue
@@ -38,7 +39,7 @@ def load_data(*args, **kwargs):
         data = pd.read_csv(filename)
         save_data_frame(data, table_name)
 
-def save_data_frame(data_frame: pd.DataFrame, table_name: str, index_col_pattern='SK.*ID', row_limit=10000, row_offset=0) -> None:
+def save_data_frame(data_frame: pd.DataFrame, table_name: str, index_col_pattern='SK.*ID', row_limit=None, row_offset=0) -> None:
     """
     Saves the data stored in a pandas DataFrame into a table named table_name
     in the relational database.  Applies indexes to all columns matching the
@@ -63,11 +64,12 @@ def save_data_frame(data_frame: pd.DataFrame, table_name: str, index_col_pattern
     index_col_regex = re.compile(index_col_pattern)
     if re.compile('application_test').search(table_name) is not None:
         row_offset = 0
-    data_frame = data_frame.iloc[row_offset:row_limit,:]
+    if row_limit is not None:
+        data_frame = data_frame.iloc[row_offset:row_limit,:]
     print(f"  Saving {table_name} with shape {data_frame.shape}")
     start_time = time.monotonic()
-    data_frame.to_pickle(f"data/{table_name}.pkl")
+    pd.to_pickle(data_frame, f"data/{table_name}.pkl")
     finish_time = time.monotonic()
-    print(f"  Completed saving {table_name} after {round(finish_time - start_time)} seconds")
+    print(f"  Completed saving {table_name} after {round(finish_time - start_time, 3)} seconds")
     
     print("  ______________________________________\n")
