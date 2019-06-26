@@ -1,10 +1,9 @@
 from sqlalchemy import text
 import pandas as pd
 
-
 from load import save_data_frame, TABLES
 from preprocess.encode import encode_vars
-from preprocess.cleaners import run_cleaners
+from preprocess.clean import run_cleaners
 
 def clean_data(*args, **kwargs):
     """

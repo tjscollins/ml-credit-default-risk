@@ -3,7 +3,7 @@ import unittest
 import pandas as pd
 import numpy as np
 
-from credit_default_model.preprocess.cleaners import remove_days_employed_outliers
+from credit_default_model.preprocess.clean import remove_days_employed_outliers
 
 class TestEncodeVars(unittest.TestCase):
 

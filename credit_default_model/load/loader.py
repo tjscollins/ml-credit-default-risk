@@ -16,7 +16,7 @@ TABLES = [
 
 DATA_FILES = [f"data/{table}.csv" for table in TABLES]
 
-def load_data(*args, **kwargs):
+def load_data():
     """
     Parse CSV data supplied from external sources and load it into the
     relational database.  CSV files will be sourced from the data/ directory
@@ -39,7 +39,13 @@ def load_data(*args, **kwargs):
         data = pd.read_csv(filename)
         save_data_frame(data, table_name)
 
-def save_data_frame(data_frame: pd.DataFrame, table_name: str, index_col_pattern='SK.*ID', row_limit=None, row_offset=0) -> None:
+def save_data_frame(
+    data_frame: pd.DataFrame,
+    table_name: str,
+    index_col_pattern='SK.*ID',
+    row_limit=None,
+    row_offset=0
+) -> None:
     """
     Saves the data stored in a pandas DataFrame into a table named table_name
     in the relational database.  Applies indexes to all columns matching the

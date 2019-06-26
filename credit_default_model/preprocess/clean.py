@@ -20,24 +20,6 @@ def remove_days_employed_outliers(data_frame: pd.DataFrame, table_name) -> pd.Da
 
     return data_frame
 
-def clean_column_name(data_frame: pd.DataFrame, table_name: str) -> pd.DataFrame:
-    """
-
-    """
-    columns: List[str] = data_frame.columns
-
-    for col in columns:
-        new_col = str(col).replace('(', '')
-        new_col = str(new_col).replace(')', '')
-        new_col = str(new_col).replace(' ', '_')
-        new_col = str(new_col).replace('+', '')
-
-        temp = data_frame[col]
-        data_frame = data_frame.drop(col, axis=1)
-        data_frame[new_col] = temp
-    
-    return data_frame
-
 DataCleaningMethod = Callable[[pd.DataFrame, str], pd.DataFrame]
 
 def run_cleaners(data_frame: pd.DataFrame, table_name: str) -> None:
