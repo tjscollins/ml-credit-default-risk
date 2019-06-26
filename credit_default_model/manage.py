@@ -1,10 +1,14 @@
 import argparse
 import textwrap
 
+import dotenv
+
 from features import engineer_features, prune_features
 from load import load_data
 from preprocess import clean_data
 from training import train_model
+
+dotenv.load_dotenv()
 
 parser = argparse.ArgumentParser(
     prog='python manage.py',

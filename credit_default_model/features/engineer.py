@@ -1,6 +1,8 @@
 import time
 import re
 from typing import Dict, Tuple
+import os
+import dotenv
 
 from featuretools import selection
 import featuretools as ft
@@ -13,7 +15,11 @@ from load.loader import TABLES, save_data_frame
 from preprocess.encode import align_data
 from .selection import prune_features
 
-MAX_FEATURES = 500
+dotenv.load_dotenv()
+
+MAX_FEATURES = int(os.environ.get('MAX_FEATURES', default='250'))
+MAX_FT_DEPTH = int(os.environ.get('MAX_FT_DEPTH', default='3'))
+USE_PCA = os.environ.get('USE_PCA', default='False')
 
 def engineer_features(*args, **kwargs):
     data, train_table, test_table = collect_processed_data()
@@ -44,7 +50,11 @@ def engineer_features(*args, **kwargs):
     test_data = test_data.drop(columns=['DATA_SET', 'TARGET'])
 
     train_data, test_data = impute_and_scale(train_data, test_data)
-    train_data, test_data = prune_features(train_data, test_data)
+
+    if USE_PCA == 'True':
+        print(f"\nApplying PCA to reduce dimensionality of engineered features")
+        print(f"  PCA_DIMENSIONS={PCA_DIMENSIONS}")
+        train_data, test_data = prune_features(train_data, test_data)
 
     train_data.index = train_ids
     train_data['TARGET'] = train_labels
@@ -58,12 +68,14 @@ def create_feature_set(data: pd.DataFrame, train_table: str, test_table: str):
     es = create_entity_set(data, train_table, test_table)
 
     print(f"\nBeginning automated feature engineering using entity set")
+    print(f"  MAX_FEATURES={MAX_FEATURES}")
+    print(f"  MAX_FT_DEPTH={MAX_FT_DEPTH}")
 
     start = time.monotonic()
     feature_matrix, feature_names = ft.dfs(
         entityset=es,
         target_entity='combined_train_test',
-        max_depth=3,
+        max_depth=MAX_FT_DEPTH,
         max_features=MAX_FEATURES,
         verbose=True
     )
