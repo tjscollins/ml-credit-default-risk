@@ -36,12 +36,12 @@ MODELS = {
         max_depth=RF_MAX_DEPTH,
         verbose=1,
         n_estimators=RF_N_ESTIMATORS,
-        n_jobs=-1,
+        n_jobs=6,
         random_state=RF_RANDOM_STATE
     )
 }
 
-def train_model(model_type='DecisionTree'):
+def train_model(model_type='RandomForest'):
     training_data: pd.DataFrame = pd.read_pickle("data/features_training_data.pkl")
 
     training_ids = training_data.index
@@ -76,7 +76,3 @@ def train_model(model_type='DecisionTree'):
 
     validation_data.to_csv('data/validation.csv')
     feature_importances.to_csv('data/feature_importances.csv')
-
-def validate_data(message: str):
-    os.system(f'kaggle c submit -f data/validation.csv -m "{message}" home-credit-default-risk')
-    os.system(f'kaggle c submissions home-credit-default-risk')
