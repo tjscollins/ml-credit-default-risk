@@ -15,7 +15,7 @@ is_production_env = os.getenv('PYTHON_ENV') == 'production'
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.secret_key = os.getenv('SECRET_KEY')
+app.secret_key = os.environ.get('SECRET_KEY')
 app.config['SECURITY_PASSWORD_SALT'] = os.getenv('SECRET_KEY')
 
 db.init_app(app)
@@ -33,7 +33,7 @@ def create_admin_if_missing():
     admin_user = User.query.filter_by(email='admin@bank.co').first()
     if admin_user is None:
         db.create_all()
-        admin_password = os.getenv('ADMIN_PASSWORD')
+        admin_password = os.environ.get('ADMIN_PASSWORD')
         user_datastore.create_user(email='admin@bank.co', password=admin_password)
         db.session.commit()
 

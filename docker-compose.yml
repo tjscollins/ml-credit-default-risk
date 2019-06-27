@@ -9,12 +9,30 @@ services:
         depends_on:
             - db
             - redis
+            - webapp_migrations
         environment: 
-            DATABASE_URL: "postgres://postgres-server/"
-
+            DATABASE_URL: "postgres://postgres@postgres-server/"
+            PYTHONPATH: ".."
+        env_file:
+            - webapp/.env
+        secrets:
+            - webapp_secret_key
+            - webapp_admin_password
+            - webapp_password_salt
         ports:
             - 8000:8000
             - 8080:8080
+        networks: 
+            - webapp-network
+
+    webapp_migrations:
+        container_name: webapp_migrations
+        image: backend_webapp
+        command: flask db upgrade
+        depends_on:
+            - db
+        environment: 
+            DATABASE_URL: "postgres://postgres@postgres-server/"
         networks: 
             - webapp-network
     
@@ -24,6 +42,8 @@ services:
         build:
             context: '.'
             dockerfile: 'NginxProxy.Dockerfile'
+        depends_on:
+            - webapp
         ports:
             - 80:80
             - 443:443
@@ -55,3 +75,11 @@ volumes:
 
 networks: 
     webapp-network:
+
+secrets:
+    webapp_secret_key:
+        file: secrets/secret_key.txt
+    webapp_admin_password:
+        file: secrets/admin_password.txt
+    webapp_password_salt:
+        file: secrets/password_salt.txt
