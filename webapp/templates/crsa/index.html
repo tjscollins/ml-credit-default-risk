@@ -1,0 +1,18 @@
+{% include "head.html" %}
+{% from "_macros.html" import render_field %}
+
+{% include "crsa/title.html" %}
+<div class="container">
+    {% include "crsa/tabs.html" %}
+
+    {% if request.path == url_for('crsa.application_analytics') %}
+    {% include "crsa/analytics.html" %}
+    {% else %}
+    {% include "crsa/select_applicant.html" %}
+    {% include "crsa/application_status.html" %}
+    {% include "crsa/applicant_data.html" %}
+    {% endif %}
+
+</div>
+
+{% include "foot.html" %}

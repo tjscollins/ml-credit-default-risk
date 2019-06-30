@@ -1,0 +1,113 @@
+.container {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    margin: 0 auto;
+    max-width: 950px; 
+    min-height: 500px;
+    width: 100%;
+
+    img {
+        max-width: inherit; 
+    }
+}
+
+.selectApplicant {
+    width: 50%;
+    margin-left: 25%;
+
+    select {
+        width: 50%;
+    }
+}
+
+.loanDataTable {
+    border: 1px solid black;
+    margin: 1em;
+    border-spacing: 0px;
+
+    caption {
+        font-size: 18px;
+    }
+
+    thead {
+        text-align: center;
+        th {
+            border-left: 1px solid black;
+            border-bottom: 1px solid black;
+            padding: 10px;
+        }
+    }
+
+    tbody {
+        tr {
+            min-height: 2em;    
+        }
+        tr:nth-child(even) {
+            background-color: lightgray;
+        }
+
+        td, th {
+            border-left: 1px solid black;
+            padding: 5px;
+            text-align: left;
+        }
+    }
+
+}
+
+.creditRiskPrediction {
+    display: flex;
+    flex-direction: column;
+    align-content: center;
+    justify-content: flex-start;
+    margin-top: 15px;
+    margin-bottom: 15px;
+    width: 500px;
+}
+
+.creditRiskPrediction-approved {
+    color: darkgreen;
+    font-size: 18px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.creditRiskPrediction-denied {
+    color: darkred;
+    font-size: 18px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.tabs {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    width: 100%;
+
+    a {
+        color: black !important;
+        text-decoration: none !important;
+    }
+    a > div {
+        align-content: center;
+        align-items: center;
+        background: #efefef;
+        border-radius: 5px;
+        border: 1px solid #aaa;
+        display: flex;
+        flex-direction: column;
+        height: 50px;
+        justify-content: center;
+        transition: background 0.25s ease;
+        width: 250px;
+        margin-right: 10px;
+        margin-bottom: 25px;
+
+        &:hover {
+            background: #dfdfdf;
+        }
+    }
+}

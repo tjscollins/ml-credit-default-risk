@@ -9,7 +9,7 @@ WORKDIR /webapp/
 COPY --chown=wsgi:wsgi requirements.txt /webapp/requirements.txt
 RUN pip install --trusted-host pypi.python.org -r requirements.txt
 
-COPY --chown=wsgi:wsgi webapp/ /webapp/
+# COPY --chown=wsgi:wsgi webapp/ /webapp/
 
 ENV PYTHONPATH=".."
 

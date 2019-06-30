@@ -8,7 +8,8 @@ from flask_security import Security, SQLAlchemyUserDatastore, login_required
 from webapp.db import db, user_datastore, User
 
 from webapp.controllers.static_dev import static_files
-from webapp.controllers.dashboard import dashboard_controller
+from webapp.controllers.crsa import crsa_controller
+from webapp.controllers.fig import fig_controller
 
 is_production_env = os.getenv('PYTHON_ENV') == 'production'
 
@@ -22,7 +23,8 @@ db.init_app(app)
 migrate = Migrate(app, db)
 security = Security(app, user_datastore)
 
-app.register_blueprint(dashboard_controller)
+app.register_blueprint(crsa_controller)
+app.register_blueprint(fig_controller)
 
 if not is_production_env:
     app.register_blueprint(static_files)

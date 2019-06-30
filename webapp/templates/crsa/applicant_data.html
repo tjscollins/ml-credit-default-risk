@@ -1,0 +1,21 @@
+{% if selected_applicant %}
+<table class="loanDataTable">
+    <caption class="loanDataTable-caption">Loan Application Data</caption>
+    <thead>
+        <tr>
+            <th scope="col">Application Attribute</th>
+            <th scope="col">Description</th>
+            <th scope="col">Value</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for row in selected_applicant.data %}
+        <tr>
+            <th scope="row">{{ row[0] }}</th>
+            <td>{{ row[1] }}</td>
+            <td>{{ row[2] }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endif %}

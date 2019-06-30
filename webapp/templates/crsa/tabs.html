@@ -1,0 +1,11 @@
+<div class="tabs">
+    {% if request.path == url_for('crsa.application_analytics') %}
+    <a href="/">
+        <div>Switch To Application Review</div>
+    </a>
+    {% else %}
+    <a href="{{ url_for('crsa.application_analytics') }}">
+        <div>Switch To Application Analytics</div>
+    </a>
+    {% endif %}
+</div>

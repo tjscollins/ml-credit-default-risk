@@ -7,6 +7,7 @@ __pycache__
 
 venv/
 data/
+webapp/data/
 public/
 dask-worker-space/
 credit_default_model/

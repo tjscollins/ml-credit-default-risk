@@ -1,6 +1,5 @@
 version: "3.7"
 services:
-
     webapp:
         container_name: webapp
         build:
@@ -15,6 +14,8 @@ services:
             PYTHONPATH: ".."
         env_file:
             - webapp/.env
+        volumes:
+            - ./webapp/:/webapp/
         secrets:
             - webapp_secret_key
             - webapp_admin_password
@@ -33,6 +34,10 @@ services:
             - db
         environment: 
             DATABASE_URL: "postgres://postgres@postgres-server/"
+        env_file:
+            - webapp/.env
+        volumes:
+            - ./webapp/data:/webapp/data
         networks: 
             - webapp-network
     

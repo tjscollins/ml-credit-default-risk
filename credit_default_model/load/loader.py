@@ -11,7 +11,8 @@ TABLES = [
     "application_train",
     "bureau_balance",
     "bureau",
-    "previous_application"
+    "previous_application",
+    "HomeCredit_columns_description"
 ]
 
 DATA_FILES = [f"data/{table}.csv" for table in TABLES]
@@ -36,7 +37,7 @@ def load_data(*args, **kwargs):
             continue
         
         table_name = match.groups()[0]
-        data = pd.read_csv(filename)
+        data = pd.read_csv(filename, sep=',', encoding='utf-8')
         save_data_frame(data, table_name)
 
 def save_data_frame(data_frame: pd.DataFrame, table_name: str, index_col_pattern='SK.*ID', row_limit=None, row_offset=0) -> None:

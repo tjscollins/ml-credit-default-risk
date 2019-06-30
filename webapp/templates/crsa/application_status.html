@@ -1,0 +1,15 @@
+{% if prediction %}
+<div class="creditRiskPrediction">
+    {% if prediction.recommended_interest %}
+    <p class="creditRiskPrediction-approved">Application Approved</p>
+    {% else %}
+    <p class="creditRiskPrediction-denied">Application Denied</p>
+    {% endif %}
+    <p>This loan has an estimated {{ prediction.default_risk }}% chance of ending in default</p>
+    {% if prediction.recommended_interest %}
+    <p>Recommend an interest rate of {{ prediction.recommended_interest }}% APY</p>
+    {% else %}
+    <p>This loan application exceeds the maximum allowed risk for approval</p>
+    {% endif %}
+</div>
+{% endif %}
