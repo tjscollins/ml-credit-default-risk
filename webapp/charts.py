@@ -3,7 +3,7 @@ from io import BytesIO
 import numpy as np
 from matplotlib import pyplot as plt
 
-from cdm import get_feature_importances, exp_variances, test_data, predictions
+from webapp.cdm import get_feature_importances, exp_variances, test_data, predictions
 
 def most_important_features_chart():
     importances = list(reversed(get_feature_importances(50)))

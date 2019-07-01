@@ -7,7 +7,6 @@ services:
             dockerfile: 'Webapp.Dockerfile'
         depends_on:
             - db
-            - redis
             - webapp_migrations
         environment: 
             DATABASE_URL: "postgres://postgres@postgres-server/"
@@ -65,18 +64,8 @@ services:
         networks: 
             - webapp-network
 
-    redis:
-        image: redis
-        container_name: redis-server
-        ports:
-            - "6379:6379"
-        volumes:
-            - data-redis:/data
-        networks: 
-            - webapp-network
 volumes:
     data-postgres:
-    data-redis:
 
 networks: 
     webapp-network:
