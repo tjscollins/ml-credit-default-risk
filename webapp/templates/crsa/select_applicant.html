@@ -1,0 +1,13 @@
+{% if select_applicant_form %}
+<form 
+    class="selectApplicant"
+    action="{{ url_for('crsa.select_applicant') }}"
+    method="GET"
+    name="select_applicant_form"
+>
+    {{ render_field(select_applicant_form.id) }}
+    <div class="form-group__horizontal">
+        {{ select_applicant_form.submit }}
+    </div>
+</form>
+{% endif %}

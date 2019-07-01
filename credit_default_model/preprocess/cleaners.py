@@ -40,6 +40,17 @@ def clean_column_name(data_frame: pd.DataFrame, table_name: str) -> pd.DataFrame
 
 DataCleaningMethod = Callable[[pd.DataFrame, str], pd.DataFrame]
 
+def transform_column_descriptions(data_frame: pd.DataFrame, table_name: str) -> pd.DataFrame:
+    column_names = data_frame['Row']
+    descriptions = data_frame['Description']
+
+    data_frame = data_frame.filter(items=['Description'], axis=1)
+
+    data_frame = data_frame.transpose()
+    data_frame.columns = column_names
+
+    return data_frame
+
 def run_cleaners(data_frame: pd.DataFrame, table_name: str) -> None:
     """
     Applies the handler_methods to a data frame if that data frame comes
@@ -52,7 +63,8 @@ def run_cleaners(data_frame: pd.DataFrame, table_name: str) -> None:
         'application_train': [remove_days_employed_outliers],
         'bureau': [],
         'bureau_balance': [],
-        'previous_application': []
+        'previous_application': [],
+        'HomeCredit_columns_description': [transform_column_descriptions]
     }
 
     print(

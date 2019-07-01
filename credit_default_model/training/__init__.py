@@ -5,6 +5,7 @@ from dotenv import load_dotenv
 
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.tree import DecisionTreeRegressor
+from sklearn.decomposition import PCA
 import numpy as np
 import pandas as pd
 from joblib import dump, load
@@ -36,9 +37,10 @@ MODELS = {
         max_depth=RF_MAX_DEPTH,
         verbose=1,
         n_estimators=RF_N_ESTIMATORS,
-        n_jobs=-1,
+        n_jobs=6,
         random_state=RF_RANDOM_STATE
-    )
+    ),
+    'PCA': PCA(n_components=256)
 }
 
 def train_model(model_type='DecisionTree'):
@@ -60,22 +62,21 @@ def train_model(model_type='DecisionTree'):
     model = MODELS[model_type]
     model.fit(training_data, training_labels)
 
-    feature_importance_values = model.feature_importances_
-    feature_importances = pd.DataFrame({
-        'feature': features,
-        'importance': feature_importance_values
-    })
-    
-    model_predictions = model.predict(testing_data)
+    if model_type != 'PCA':
+        feature_importance_values = model.feature_importances_
+        feature_importances = pd.DataFrame({
+            'feature': features,
+            'importance': feature_importance_values
+        })
+        model_predictions = model.predict(testing_data)
+        validation_data = pd.DataFrame(index=testing_ids, data={
+            'TARGET': model_predictions
+        })
 
-    dump(model, 'data/trained_dt_model.joblib')
+        validation_data.to_csv('data/validation.csv')
+        feature_importances.to_csv('data/feature_importances.csv')
 
-    validation_data = pd.DataFrame(index=testing_ids, data={
-        'TARGET': model_predictions
-    })
-
-    validation_data.to_csv('data/validation.csv')
-    feature_importances.to_csv('data/feature_importances.csv')
+    dump(model, f'data/{model_type}.joblib')
 
 def validate_data(message: str):
     os.system(f'kaggle c submit -f data/validation.csv -m "{message}" home-credit-default-risk')

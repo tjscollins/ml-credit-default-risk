@@ -1,0 +1,14 @@
+{% include "head.html" %}
+{% from "_macros.html" import render_field %}
+
+{% include "crsa/title.html" %}
+<div class="container">
+    {% include "crsa/tabs.html" %}
+    {% include "crsa/select_applicant.html" %}
+    
+    {% include "crsa/application_status.html" %}
+
+    {% include "crsa/applicant_data.html" %}
+</div>
+
+{% include "foot.html" %}
