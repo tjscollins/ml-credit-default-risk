@@ -53,12 +53,12 @@ jobs:
             cd webapp
             flask db upgrade
 
-      - run:
-          name: Run Webapp tests
-          command: |
-            . venv/bin/activate
-            cd webapp
-            python -m pytest
+      # - run:
+      #     name: Run Webapp tests
+      #     command: |
+      #       . venv/bin/activate
+      #       cd webapp
+      #       python -m pytest
       
       - run:
           name: Run CDM tests

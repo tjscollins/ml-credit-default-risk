@@ -9,7 +9,7 @@ import numpy as np
 import pandas as pd
 
 from webapp.settings import SITE_TITLE
-from webapp.cdm import test_data, raw_data, column_descriptions, model_prediction, model_analytics
+from webapp.cdm import test_data, raw_data, column_descriptions, model_prediction
 
 APP_REVIEW_TITLE = 'Credit Risk Score Application: Application Review'
 ANALYTICS_TITLE= 'Credit Risk Score Application: Application Analytics'
