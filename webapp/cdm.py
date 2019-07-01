@@ -23,7 +23,7 @@ try:
     column_descriptions = pd.read_pickle('data/processed_HomeCredit_columns_description.pkl')
     raw_data = pd.read_pickle('data/application_test.pkl')
     test_data = pd.read_pickle('data/features_testing_data.pkl')
-    credit_default_model = joblib.load('data/model.joblib')
+    credit_default_model = joblib.load('data/RandomForest.joblib')
     principal_components = joblib.load('data/PCA.joblib')
     exp_variances = pd.DataFrame(principal_components.explained_variance_ratio_)
     predictions = credit_default_model.predict(test_data)
