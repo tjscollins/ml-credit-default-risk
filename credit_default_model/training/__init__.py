@@ -26,6 +26,8 @@ RF_MIN_SAMPLES_LEAF = int(os.getenv('RF_MIN_SAMPLES_LEAF', default='5'))
 str_or_none = os.getenv('RF_RANDOM_STATE', default=None)
 RF_RANDOM_STATE = int(str_or_none) if str_or_none is not None else None
 
+PCA_MAX_COMPONENTS = int(os.getenv('PCA_DIMENSIONS', default='5'))
+
 MODELS = {
     'DecisionTree': DecisionTreeRegressor(
         min_samples_leaf=DT_MIN_SAMPLES_LEAF,
@@ -40,7 +42,7 @@ MODELS = {
         n_jobs=6,
         random_state=RF_RANDOM_STATE
     ),
-    'PCA': PCA(n_components=256)
+    'PCA': PCA(n_components=PCA_MAX_COMPONENTS)
 }
 
 def train_model(model_type='DecisionTree'):
